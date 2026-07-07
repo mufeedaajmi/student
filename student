@@ -1,0 +1,171 @@
+import java.io.Serializable;
+
+public class Student implements Serializable {
+    private int id;
+    private String name;
+    private double marks;
+
+    public Student(int id, String name, double marks) {
+        this.id = id;
+        this.name = name;
+        this.marks = marks;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getMarks() {
+        return marks;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setMarks(double marks) {
+        this.marks = marks;
+    }
+
+    @Override
+    public String toString() {
+        return id + " " + name + " " + marks;
+    }
+}
+import java.io.*;
+import java.util.*;
+
+public class StudentManagementSystem {
+
+    static ArrayList<Student> students = new ArrayList<>();
+    static Scanner sc = new Scanner(System.in);
+    static final String FILE_NAME = "students.dat";
+
+    public static void main(String[] args) {
+        load();
+
+        while (true) {
+            System.out.println("\n1.Add");
+            System.out.println("2.View");
+            System.out.println("3.Search");
+            System.out.println("4.Update");
+            System.out.println("5.Delete");
+            System.out.println("6.Save");
+            System.out.println("7.Exit");
+
+            int choice = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    addStudent();
+                    break;
+                case 2:
+                    viewStudents();
+                    break;
+                case 3:
+                    searchStudent();
+                    break;
+                case 4:
+                    updateStudent();
+                    break;
+                case 5:
+                    deleteStudent();
+                    break;
+                case 6:
+                    save();
+                    break;
+                case 7:
+                    save();
+                    System.exit(0);
+            }
+        }
+    }
+
+    static void addStudent() {
+        System.out.print("ID: ");
+        int id = sc.nextInt();
+
+        sc.nextLine();
+
+        System.out.print("Name: ");
+        String name = sc.nextLine();
+
+        System.out.print("Marks: ");
+        double marks = sc.nextDouble();
+
+        students.add(new Student(id, name, marks));
+    }
+
+    static void viewStudents() {
+        for (Student s : students) {
+            System.out.println(s);
+        }
+    }
+
+    static void searchStudent() {
+        System.out.print("Enter ID: ");
+        int id = sc.nextInt();
+
+        for (Student s : students) {
+            if (s.getId() == id) {
+                System.out.println(s);
+                return;
+            }
+        }
+
+        System.out.println("Student Not Found");
+    }
+
+    static void updateStudent() {
+        System.out.print("Enter ID: ");
+        int id = sc.nextInt();
+
+        sc.nextLine();
+
+        for (Student s : students) {
+            if (s.getId() == id) {
+
+                System.out.print("New Name: ");
+                s.setName(sc.nextLine());
+
+                System.out.print("New Marks: ");
+                s.setMarks(sc.nextDouble());
+
+                return;
+            }
+        }
+
+        System.out.println("Student Not Found");
+    }
+
+    static void deleteStudent() {
+        System.out.print("Enter ID: ");
+        int id = sc.nextInt();
+
+        students.removeIf(s -> s.getId() == id);
+    }
+
+    static void save() {
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(FILE_NAME));
+            out.writeObject(students);
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    static void load() {
+        try {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(FILE_NAME));
+            students = (ArrayList<Student>) in.readObject();
+            in.close();
+        } catch (Exception e) {
+        }
+    }
+}
+
