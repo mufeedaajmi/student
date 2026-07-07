@@ -1,0 +1,40 @@
+import java.io.File;
+
+public class FileOrganizer {
+
+    public static void main(String[] args) {
+
+        String path = "C:\\Users\\YourName\\Downloads";
+
+        File folder = new File(path);
+
+        File[] files = folder.listFiles();
+
+        if (files == null)
+            return;
+
+        for (File file : files) {
+
+            if (file.isFile()) {
+
+                String name = file.getName();
+
+                int index = name.lastIndexOf(".");
+
+                if (index != -1) {
+
+                    String ext = name.substring(index + 1);
+
+                    File dir = new File(path + "\\" + ext);
+
+                    if (!dir.exists())
+                        dir.mkdir();
+
+                    file.renameTo(new File(dir, file.getName()));
+                }
+            }
+        }
+
+        System.out.println("Files Organized Successfully.");
+    }
+}
